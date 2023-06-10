@@ -17,7 +17,7 @@ for i in range(1000):
     env.render()
     # cv2.imshow('render', env.render())
     # cv2.waitKey(200)
-    # plt.imshow(env.render())
+    # plt.imshow(obs)
     # plt.show()
     if terminated or truncated:
         break

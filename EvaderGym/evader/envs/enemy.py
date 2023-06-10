@@ -20,14 +20,10 @@ class Enemy(Object):
         self.gen_new_dest()
         self.shoot_wait = 0
         
-
     # (min_x, min_y, max_x, max_y)
     def gen_new_dest(self):
         self.dest = [self.draw_loc_x(), self.draw_loc_y()]
         self.v = self.calc_velocity([self.x,self.y],self.dest,self.speed)
-
-
-    
     
     def shoot(self, target=[0,0]):
         self.shoot_wait = 0

@@ -18,8 +18,8 @@ class EvaderEnv_v1(Env):
         super().__init__()
 
         # dimensions of the grid
-        self.width = kwargs.get('width',800)
-        self.height = kwargs.get('height',800)
+        self.width = kwargs.get('width',400)
+        self.height = kwargs.get('height',400)
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -45,6 +45,25 @@ class EvaderEnv_v1(Env):
         self.agent_dead = False
 
     def _get_obs(self):
+        canvas = pygame.Surface(self.window_size)
+        canvas.fill((255, 255, 255))
+
+
+        # Now we draw the agent
+        
+        for p in self.agents:
+            p.draw(canvas)
+
+        for b in self.bullets:
+            b.draw(canvas)
+
+        for e in self.enemies:
+            e.draw(canvas)
+
+        return np.transpose(
+                np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
+            )
+    
         pass
     
     def _get_reward(self):
