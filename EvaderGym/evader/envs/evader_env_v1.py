@@ -18,8 +18,8 @@ class EvaderEnv_v1(Env):
         super().__init__()
 
         # dimensions of the grid
-        self.width = kwargs.get('width',400)
-        self.height = kwargs.get('height',400)
+        self.width = kwargs.get('width',600)
+        self.height = kwargs.get('height',600)
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
@@ -70,7 +70,12 @@ class EvaderEnv_v1(Env):
         return 0 if self.agent_dead else 1
 
     def _get_info(self):
-        return {}
+        b5 = self._choose_nearest_bullets()
+        agent = self.agents[0]
+        return {
+            "agent": agent,
+            "bullets": b5
+        }
 
     def _update_state(self,action):
 
@@ -96,6 +101,26 @@ class EvaderEnv_v1(Env):
 
         pass
 
+    def _choose_nearest_bullets(self):
+        b5 = []
+        for b in self.bullets:
+            b.color = (255,0,0)
+        agent = self.agents[0]
+        for _ in range(1):
+            best = None
+            best_d = self.width**2
+            for b in self.bullets:
+                d = agent.calc_distance_to([b.x,b.y])
+                if( d < best_d and not b in b5):
+                    best = b
+                    best_d = d
+
+            if best:
+                best.color = (255,0,255)
+                b5.append(best)
+
+        return b5
+
     def step(self, action):        
         self._update_state(action)
 
@@ -109,7 +134,8 @@ class EvaderEnv_v1(Env):
         terminated = self.agent_dead
         truncated = False
         return self._get_obs(), self._get_reward(), terminated, truncated, self._get_info()
-    
+
+
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
 
@@ -139,7 +165,7 @@ class EvaderEnv_v1(Env):
 
 
         # Now we draw the agent
-        
+       
         for p in self.agents:
             p.draw(canvas)
 
